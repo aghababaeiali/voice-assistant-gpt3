@@ -1,96 +1,142 @@
-# Voice Chat App (Watson STT/TTS + OpenAI)
+# 🎙️ Voice Assistant Web App
 
-## Overview
+A full-stack voice-enabled assistant built with **Flask**, **IBM Watson
+(Speech-to-Text & Text-to-Speech)**, and **OpenAI GPT**.
 
-This is a Flask-based voice-enabled chat application.
-
-Workflow: 1. The browser records user audio. 2. Audio is sent to IBM
-Watson Speech-to-Text (lab endpoint) for transcription. 3. The
-transcribed text is sent to OpenAI for a short assistant response. 4.
-The response text is converted to speech using IBM Watson Text-to-Speech
-(lab endpoint). 5. The server returns both text and audio (base64
-encoded) to the frontend.
+This application allows users to: - 🎤 Record speech and transcribe it
+to text - 🤖 Generate AI-powered responses using OpenAI - 🔊 Convert
+responses back to speech - 💬 Interact through a clean chat-style
+interface
 
 ------------------------------------------------------------------------
 
-## Project Structure
+## 📸 Application Preview
 
--   server.py --- Flask server and API routes
--   worker.py --- Handles Watson STT/TTS and OpenAI calls
--   templates/index.html --- Frontend UI
--   static/script.js --- Client-side JavaScript
--   static/style.css --- Styling
--   requirements.txt --- Python dependencies
--   Dockerfile --- Container configuration
+![Voice Assistant Screenshot](app_screenshot.png)
 
 ------------------------------------------------------------------------
 
-## Requirements
+## 🏗️ Architecture Overview
 
--   Python 3.10+
--   Docker (optional)
--   OpenAI API key (required)
+**Workflow:**
 
-Note: The Watson endpoints used in this project
-(sn-watson-stt.labs.skills.network and
-sn-watson-tts.labs.skills.network) are lab services and may only work
-inside the Skills Network lab environment.
-
-------------------------------------------------------------------------
-
-## Local Setup
-
-1.  Clone the repository: git clone `<your-repo-url>`{=html} cd
-    `<your-project-folder>`{=html}
-
-2.  Install dependencies: pip install -r requirements.txt
-
-3.  Set your OpenAI API key: macOS/Linux: export
-    OPENAI_API_KEY="YOUR_API_KEY"
-
-    Windows PowerShell: setx OPENAI_API_KEY "YOUR_API_KEY"
-
-4.  Run the server: python server.py
-
-5.  Open in your browser: http://localhost:8000
+1.  User records audio in the browser\
+2.  Audio is sent to IBM Watson Speech-to-Text (lab endpoint)\
+3.  Transcribed text is sent to OpenAI GPT\
+4.  AI response text is generated\
+5.  Response is converted to speech via Watson Text-to-Speech\
+6.  Text + audio (base64) are returned to the frontend
 
 ------------------------------------------------------------------------
 
-## Run with Docker
+## 📁 Project Structure
 
-Build the image: docker build -t voice-chatapp .
-
-Run the container: docker run -p 8000:8000 -e
-OPENAI_API_KEY="YOUR_API_KEY" voice-chatapp
-
-Then open: http://localhost:8000
-
-------------------------------------------------------------------------
-
-## API Endpoints
-
-POST /speech-to-text - Accepts raw audio bytes - Returns: {"text":
-"transcribed text"}
-
-POST /process-message - Accepts JSON: {"userMessage": "Hello", "voice":
-"default"} - Returns: { "openaiResponseText": "Assistant reply",
-"openaiResponseSpeech": "`<base64 encoded wav>`{=html}" }
+    ├── server.py              # Flask routes and API endpoints
+    ├── worker.py              # Watson + OpenAI logic
+    ├── templates/
+    │   └── index.html         # Frontend UI
+    ├── static/
+    │   ├── script.js          # Client-side logic
+    │   └── style.css          # Styling
+    ├── requirements.txt       # Python dependencies
+    ├── Dockerfile             # Container configuration
+    └── README.md
 
 ------------------------------------------------------------------------
 
-## Important Notes
+## 🚀 Running Locally
 
--   Print statements appear in the server terminal or Docker logs, not
-    in the browser.
--   Do NOT commit API keys to GitHub.
--   Use environment variables for secrets.
--   Lab-specific certificate configurations are not required in normal
-    environments.
+### 1️⃣ Clone the repository
+
+    git clone <your-repo-url>
+    cd <your-project-folder>
+
+### 2️⃣ Install dependencies
+
+    pip install -r requirements.txt
+
+### 3️⃣ Set your OpenAI API key
+
+**macOS / Linux**
+
+    export OPENAI_API_KEY="YOUR_API_KEY"
+
+**Windows (PowerShell)**
+
+    setx OPENAI_API_KEY "YOUR_API_KEY"
+
+### 4️⃣ Start the server
+
+    python server.py
+
+Open in your browser:
+
+    http://localhost:8000
 
 ------------------------------------------------------------------------
 
-## Security
+## 🐳 Run with Docker
 
-Never upload: - API keys - Private certificates - Secret tokens
+Build:
 
-Always use environment variables for sensitive data.
+    docker build -t voice-assistant .
+
+Run:
+
+    docker run -p 8000:8000 -e OPENAI_API_KEY="YOUR_API_KEY" voice-assistant
+
+------------------------------------------------------------------------
+
+## 🔌 API Endpoints
+
+### POST `/speech-to-text`
+
+-   Accepts raw audio bytes
+-   Returns:
+
+``` json
+{"text": "transcribed text"}
+```
+
+### POST `/process-message`
+
+Request:
+
+``` json
+{"userMessage": "Hello", "voice": "default"}
+```
+
+Response:
+
+``` json
+{
+  "openaiResponseText": "Assistant reply",
+  "openaiResponseSpeech": "<base64 encoded wav>"
+}
+```
+
+------------------------------------------------------------------------
+
+## ⚠️ Important Notes
+
+-   The Watson endpoints used (`sn-watson-*.labs.skills.network`) are
+    **lab-specific** and may not work outside the IBM Skills Network
+    environment unless replaced with standard IBM Cloud credentials.
+-   OpenAI requires a valid API key.
+-   Never commit API keys or certificates to GitHub.
+-   Server `print()` logs appear in the terminal or Docker logs, not in
+    the browser.
+
+------------------------------------------------------------------------
+
+## 🔐 Security Best Practices
+
+-   Use environment variables for secrets
+-   Add sensitive folders (e.g., `certs/`) to `.gitignore`
+-   Do not hardcode credentials
+
+------------------------------------------------------------------------
+
+## 📄 License
+
+MIT License
